@@ -1,5 +1,10 @@
 <div class="mt-4">
-  <h3>Khóa học của tôi</h3>
+  <div>
+    <h3>Khóa học của tôi</h3>
+    {{#if deletedCount}}
+      <a href="/me/trash/courses">Thùng rác ({{deletedCount}})</a>
+    {{/if}}
+  </div>
   <table class="table mt-4">
     <thead>
       <tr>
@@ -27,6 +32,12 @@
               data-bs-target="#delete-course-modal"
               data-bs-whatever="{{this._id}}"
             >Xóa</a>
+          </td>
+        </tr>
+      {{else}}
+        <tr>
+          <td colspan="5" class="text-center">Bạn chưa đăng khóa học nào.
+            <a href="/courses/create">Đăng khóa học</a>
           </td>
         </tr>
       {{/each}}
@@ -57,7 +68,7 @@
           class="btn btn-danger"
           data-bs-dismiss="modal"
         >Xóa bỏ</button>
-        <button type="button" class="btn btn-primary">Hủy</button>
+        <button type="button" data-bs-dismiss="modal" class="btn btn-primary">Hủy</button>
       </div>
     </div>
   </div>
@@ -69,11 +80,12 @@
 <script>
 
   const exampleModal = document.getElementById('delete-course-modal'); let
-  courseId; let deleteForm = document.forms["delete-course-form"] //When dialog
-  confirm click exampleModal.addEventListener('show.bs.modal', function(event) {
-  const button = event.relatedTarget; courseId =
-  button.getAttribute('data-bs-whatever'); let btnDeleteCourse =
-  document.getElementById("btn-delete-course-modal")
+  courseId; let deleteForm = document.forms["delete-course-form"]; 
+  /* When dialog confirm click */
+  exampleModal.addEventListener('show.bs.modal',
+  function(event) { const button = event.relatedTarget; let btnDeleteCourse =
+  document.getElementById("btn-delete-course-modal"); courseId =
+  button.getAttribute('data-bs-whatever');
   btnDeleteCourse.addEventListener("click", event => { deleteForm.action =
   `/courses/${courseId}?_method=DELETE`; deleteForm.submit(); }) });
 

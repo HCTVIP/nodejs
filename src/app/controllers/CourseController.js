@@ -18,14 +18,12 @@ class CourseController {
 
   // [POST] /courses/store
   store(req, res, next) {
-    // res.json(req.body);
-    const formData = req.body;
-    formData.image = `https://i.ytimg.com/vi/${req.body.videoId}/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLBrFTYv07BipzY2gpiKaOk3MTbc1Q`;
+    req.body.image = `https://i.ytimg.com/vi/${req.body.videoId}/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLBrFTYv07BipzY2gpiKaOk3MTbc1Q`;
     const course = new Course(req.body);
     course
       .save()
       .then(() => {
-        res.redirect("/");
+        res.redirect("/me/stored/courses");
       })
       .catch((error) => {});
   }
@@ -48,7 +46,21 @@ class CourseController {
 
   // [DELETE] /courses/:id
   destroy(req, res, next) {
-    Course.deleteOne({ _id: req.params.id }, req.body)
+    Course.delete({ _id: req.params.id })
+      .then(() => res.redirect("back"))
+      .catch(next);
+  }
+
+  // [DELETE] /courses/:id/force
+  forceDestroy(req, res, next) {
+    Course.deleteOne({ _id: req.params.id })
+      .then(() => res.redirect("back"))
+      .catch(next);
+  }
+
+  // [PATCH] /courses/:id/restore
+  restore(req, res, next) {
+    Course.restore({ _id: req.params.id })
       .then(() => res.redirect("back"))
       .catch(next);
   }

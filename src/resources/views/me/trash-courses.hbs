@@ -1,0 +1,114 @@
+<div class="mt-4">
+  <div>
+    <a href="/me/stored/courses">Danh sách khóa học</a>
+    <h3>Khóa học đã xóa</h3>
+  </div>
+  <table class="table mt-4">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Tên khóa học</th>
+        <th scope="col">Trình độ</th>
+        <th scope="col" colspan="4">Thời gian xóa</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each courses}}
+        <tr>
+          <th scope="row"> {{sum @index 1}}</th>
+          <td>{{this.name}}</td>
+          <td>{{this.level}}</td>
+          <td>{{this.deletedAt}}</td>
+          <td>
+            <a
+              href=""
+              class="btn btn-link btn-restore"
+              data-id="{{this._id}}"
+            >Khôi phục</a>
+          </td>
+          <td>
+            <a
+              href="#"
+              class="btn btn-link"
+              data-bs-toggle="modal"
+              data-bs-target="#delete-course-modal"
+              data-bs-whatever="{{this._id}}"
+              data-id="{{this._id}}"
+            >Xóa vĩnh viễn</a>
+          </td>
+        </tr>
+      {{else}}
+        <tr>
+          <td colspan="5" class="text-center">Thùng rác trống.
+            <a href="/me/stored/courses">Danh sách khóa học</a>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+
+{{! confirm delete course }}
+<div class="modal fade" id="delete-course-modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Xóa khóa học</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        Hành động này không thể khôi phục. Bạn vẫn muốn xóa khóa học này chứ?
+      </div>
+      <div class="modal-footer">
+        <button
+          id="btn-delete-course-modal"
+          type="button"
+          class="btn btn-danger"
+          data-bs-dismiss="modal"
+        >Xóa vĩnh viễn</button>
+        <button data-bs-dismiss="modal" aria-label="Close" type="button" class="btn btn-primary">Hủy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{! Delete hidden form }}
+<form name="delete-course-form" method="POST"></form>
+<form name="restore-course-form" method="POST"></form>
+
+<script>
+
+  // ForceDelete btn clicked
+  const exampleModal = document.getElementById('delete-course-modal'); 
+  let courseId; 
+  let deleteForm = document.forms["delete-course-form"];
+
+  exampleModal.addEventListener('show.bs.modal', function(event) { 
+  const button = event.relatedTarget; 
+  let btnDeleteCourse = document.getElementById("btn-delete-course-modal");
+  courseId = button.getAttribute('data-bs-whatever'); 
+
+  btnDeleteCourse.addEventListener("click", event => {  
+    deleteForm.action = `/courses/${courseId}/force?_method=DELETE`; 
+    deleteForm.submit(); }) 
+  });
+
+
+  // Restore btn clicked
+  let restoreForm = document.forms["restore-course-form"];  
+  let restoreBtn = document.getElementsByClassName("btn-restore"); 
+  let btn = Array.from(restoreBtn); 
+  
+  btn.map(btn => { btn.addEventListener("click", (e) => { 
+    e.preventDefault(); 
+    restoreForm.action = `/courses/${btn.dataset.id}/restore?_method=PATCH`; 
+    restoreForm.submit();
+    }) 
+  })
+
+</script>
