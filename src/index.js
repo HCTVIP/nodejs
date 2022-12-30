@@ -2,11 +2,15 @@ const path = require("path");
 const express = require("express");
 const morgan = require("morgan");
 const { engine } = require("express-handlebars");
+const methodOverride = require("method-override");
 const app = express();
 const port = 3000;
 
 const route = require("./routes");
 const db = require("./config/db");
+
+// Config method PUT, DELETE for HTML because HTML just support method POST, GET
+app.use(methodOverride("_method"));
 
 // Connect DB
 db.connect();
@@ -29,6 +33,9 @@ app.engine(
   "hbs",
   engine({
     extname: ".hbs",
+    helpers: {
+      sum: (a, b) => a + b,
+    },
   })
 );
 app.set("view engine", "hbs");
