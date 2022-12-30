@@ -27,7 +27,7 @@
       <option value="delete">Xóa</option>
     </select>
 
-    <button class="btn btn-primary btn-sm disabled" id="check-all-submit-btn">Thực hiện</button>
+    <button class="btn btn-primary btn-sm " disabled id="check-all-submit-btn">Thực hiện</button>
   </div>
 
   <table class="table mt-4">
@@ -141,9 +141,9 @@
       for (let i = 0; i < checkbox.length; i++) {
         checkbox[i].checked = checkboxAll.checked;
         if(checkboxAll.checked) {
-              checkAllSubmitBtn.classList.remove("disabled")
+              checkAllSubmitBtn.removeAttribute("disabled")
             }else {
-              checkAllSubmitBtn.classList.add("disabled")
+              checkAllSubmitBtn.setAttribute("disabled","")
             }
       }
     }
@@ -154,15 +154,15 @@
             let checkedBox = document.querySelectorAll('input[name="courseIds[]"]:checked');
             checkboxAll.checked = checkedBox.length === checkbox.length;
             if(checkedBox.length) {
-              checkAllSubmitBtn.classList.remove("disabled")
+              checkAllSubmitBtn.removeAttribute("disabled")
             }else {
-              checkAllSubmitBtn.classList.add("disabled")
+              checkAllSubmitBtn.setAttribute("disabled","")
             }
         } 
       }
 
   /* Check all submit button clicked */ 
-    checkAllSubmitBtn.addEventListener("submit", function () {
+    containerForm.addEventListener("submit", function (e) {
       let isSubmitable = !checkAllSubmitBtn.hasClass("disabled")
       if(!isSubmitable) {
         e.preventDefault();
