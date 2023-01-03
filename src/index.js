@@ -3,17 +3,20 @@ const express = require("express");
 const morgan = require("morgan");
 const { engine } = require("express-handlebars");
 const methodOverride = require("method-override");
-const app = express();
-const port = 3000;
+const SortMiddleware = require("./app/middlewares/SortMiddleware");
 
 const route = require("./routes");
 const db = require("./config/db");
 
-// Config method PUT, DELETE for HTML because HTML just support method POST, GET
-app.use(methodOverride("_method"));
+
+
+
 
 // Connect DB
 db.connect();
+
+const app = express();
+const port = 3000;
 
 // Xử lý static files
 app.use(express.static(path.join(__dirname, "public")));
@@ -25,6 +28,13 @@ app.use(
 );
 app.use(express.json());
 
+// Config method PUT, DELETE for HTML because HTML just support method POST, GET
+app.use(methodOverride("_method"));
+
+//Custom middleware
+app.use(SortMiddleware);
+
+
 // HTTP logger
 // app.use(morgan("combined"));
 
@@ -35,6 +45,24 @@ app.engine(
     extname: ".hbs",
     helpers: {
       sum: (a, b) => a + b,
+      sortable: (field, sort) => {
+
+        const sortType = field === sort.column ? sort.type : 'default';
+        const icons = {
+          default: 'oi oi-elevator',
+          asc: 'oi oi-sort-ascending',
+          desc: 'oi oi-sort-descending',
+        }
+        const types = {
+          default:'desc',
+          asc:'desc',
+          desc:'asc',
+        }
+        const type = types[sortType]
+        const icon = icons[sortType]
+
+        return `<a href="?_sort&column=${field}&type=${type}"><span class="${icon}"></span></a>`;
+      }
     },
   })
 );
