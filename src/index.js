@@ -8,10 +8,6 @@ const SortMiddleware = require("./app/middlewares/SortMiddleware");
 const route = require("./routes");
 const db = require("./config/db");
 
-
-
-
-
 // Connect DB
 db.connect();
 
